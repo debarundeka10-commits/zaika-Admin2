@@ -1,0 +1,2112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zaika Premium | Admin Panel</title>
+  <style>
+    :root {
+      --brand: #e23744;
+      --brand-dark: #9b1826;
+      --ink: #171717;
+      --muted: #6b7280;
+      --line: #eceff3;
+      --panel: #ffffff;
+      --page: #f7f7f9;
+      --soft-red: #fff1f2;
+      --green: #087f5b;
+      --green-soft: #e6f6ef;
+      --amber: #b45309;
+      --amber-soft: #fff7e6;
+      --blue: #1d4ed8;
+      --blue-soft: #edf4ff;
+      --danger: #b91c1c;
+      --danger-soft: #fee2e2;
+      --shadow: 0 20px 55px rgba(17, 24, 39, 0.12);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background: var(--page);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:disabled,
+    select:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .login-screen {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: minmax(320px, 480px) 1fr;
+      background:
+        radial-gradient(circle at 15% 12%, rgba(226, 55, 68, 0.15), transparent 28%),
+        linear-gradient(135deg, #ffffff 0%, #fff6f6 45%, #f7f7f9 100%);
+    }
+
+    .login-card {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(24px, 5vw, 64px);
+      background: rgba(255, 255, 255, 0.92);
+      border-right: 1px solid rgba(226, 55, 68, 0.08);
+      backdrop-filter: blur(14px);
+      position: relative;
+      z-index: 2;
+    }
+
+    .brand-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 34px;
+    }
+
+    .brand-mark {
+      width: 46px;
+      height: 46px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: #ffffff;
+      font-weight: 900;
+      letter-spacing: 0;
+      background: var(--brand);
+      box-shadow: 0 16px 32px rgba(226, 55, 68, 0.3);
+    }
+
+    .brand-name {
+      display: grid;
+      gap: 2px;
+    }
+
+    .brand-name strong {
+      font-size: 1.28rem;
+      line-height: 1;
+    }
+
+    .brand-name span {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .login-copy {
+      max-width: 430px;
+      margin-bottom: 26px;
+    }
+
+    .login-copy h1 {
+      margin: 0 0 12px;
+      font-size: clamp(2.1rem, 6vw, 4.7rem);
+      line-height: 0.95;
+      letter-spacing: 0;
+    }
+
+    .login-copy p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.65;
+    }
+
+    .form-panel {
+      display: grid;
+      gap: 16px;
+      max-width: 420px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field label {
+      color: #3f3f46;
+      font-size: 0.88rem;
+      font-weight: 800;
+    }
+
+    .field input,
+    .field textarea,
+    .field select {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid #e5e7eb;
+      border-radius: var(--radius);
+      background: #ffffff;
+      color: var(--ink);
+      outline: none;
+      padding: 12px 14px;
+      transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .field textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus {
+      border-color: rgba(226, 55, 68, 0.75);
+      box-shadow: 0 0 0 4px rgba(226, 55, 68, 0.12);
+    }
+
+    .primary-btn,
+    .secondary-btn,
+    .danger-btn,
+    .ghost-btn,
+    .icon-btn {
+      border: 0;
+      border-radius: var(--radius);
+      min-height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-weight: 850;
+      transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    }
+
+    .primary-btn {
+      min-height: 50px;
+      padding: 0 18px;
+      color: #ffffff;
+      background: var(--brand);
+      box-shadow: 0 14px 26px rgba(226, 55, 68, 0.25);
+    }
+
+    .secondary-btn {
+      padding: 0 14px;
+      color: var(--green);
+      background: var(--green-soft);
+    }
+
+    .danger-btn {
+      padding: 0 14px;
+      color: var(--danger);
+      background: var(--danger-soft);
+    }
+
+    .ghost-btn {
+      padding: 0 14px;
+      color: #52525b;
+      background: #f3f4f6;
+    }
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      color: #52525b;
+      background: #f5f5f5;
+    }
+
+    .primary-btn:hover,
+    .secondary-btn:hover,
+    .danger-btn:hover,
+    .ghost-btn:hover,
+    .icon-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .login-message,
+    .toast {
+      min-height: 22px;
+      color: var(--danger);
+      font-size: 0.92rem;
+      font-weight: 750;
+    }
+
+    .motion-panel {
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+      background:
+        linear-gradient(120deg, rgba(23, 23, 23, 0.28), rgba(226, 55, 68, 0.76)),
+        url("https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1600&q=85") center / cover;
+      color: #ffffff;
+    }
+
+    .motion-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.36));
+    }
+
+    .motion-content {
+      position: relative;
+      height: 100%;
+      display: grid;
+      grid-template-columns: 1fr minmax(260px, 380px);
+      gap: 28px;
+      align-items: end;
+      padding: clamp(28px, 5vw, 64px);
+    }
+
+    .motion-copy {
+      max-width: 640px;
+      padding-bottom: 42px;
+    }
+
+    .motion-copy h2 {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 4.6rem);
+      line-height: 0.98;
+      letter-spacing: 0;
+    }
+
+    .motion-copy p {
+      max-width: 520px;
+      margin: 18px 0 0;
+      color: rgba(255, 255, 255, 0.86);
+      line-height: 1.6;
+      font-size: 1.02rem;
+    }
+
+    .cinema-frame {
+      height: min(76vh, 690px);
+      min-height: 520px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.14);
+      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.32);
+      backdrop-filter: blur(10px);
+      transform: rotate(2deg);
+    }
+
+    .cinema-track {
+      display: grid;
+      gap: 16px;
+      padding: 18px;
+      animation: foodReel 24s linear infinite;
+    }
+
+    .food-shot {
+      min-height: 210px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: #111827 center / cover;
+      position: relative;
+    }
+
+    .food-shot::after {
+      content: attr(data-label);
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      bottom: 14px;
+      padding: 10px 12px;
+      color: #ffffff;
+      border-radius: 6px;
+      background: rgba(0, 0, 0, 0.38);
+      font-weight: 900;
+      backdrop-filter: blur(8px);
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 284px minmax(0, 1fr);
+    }
+
+    .sidebar {
+      min-height: 100vh;
+      padding: 22px;
+      color: #ffffff;
+      background: #171717;
+      position: sticky;
+      top: 0;
+      align-self: start;
+    }
+
+    .sidebar .brand-row {
+      margin-bottom: 28px;
+    }
+
+    .sidebar .brand-name span {
+      color: rgba(255, 255, 255, 0.64);
+    }
+
+    .nav-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .nav-btn {
+      width: 100%;
+      min-height: 44px;
+      border: 0;
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      padding: 0 12px;
+      color: rgba(255, 255, 255, 0.72);
+      background: transparent;
+      font-weight: 850;
+      text-align: left;
+    }
+
+    .nav-btn svg {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+    }
+
+    .nav-btn.active,
+    .nav-btn:hover {
+      color: #ffffff;
+      background: rgba(226, 55, 68, 0.9);
+    }
+
+    .sidebar-footer {
+      margin-top: 26px;
+      display: grid;
+      gap: 10px;
+      padding-top: 22px;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .admin-chip {
+      min-width: 0;
+      padding: 12px;
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .admin-chip span {
+      display: block;
+      color: rgba(255, 255, 255, 0.62);
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .admin-chip strong {
+      display: block;
+      overflow: hidden;
+      margin-top: 4px;
+      color: #ffffff;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 0.92rem;
+    }
+
+    .main {
+      min-width: 0;
+      padding: 24px;
+    }
+
+    .topbar {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: clamp(1.6rem, 3vw, 2.6rem);
+      letter-spacing: 0;
+    }
+
+    .topbar p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .search-box {
+      min-width: min(100%, 300px);
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 10px 14px 10px 40px;
+      outline: none;
+      background: #ffffff;
+    }
+
+    .search-box svg {
+      width: 17px;
+      height: 17px;
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #9ca3af;
+    }
+
+    .hero-band {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(260px, 0.85fr);
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .hero-card {
+      min-height: 260px;
+      display: grid;
+      align-content: end;
+      overflow: hidden;
+      position: relative;
+      padding: clamp(18px, 3vw, 30px);
+      color: #ffffff;
+      border-radius: var(--radius);
+      background:
+        linear-gradient(115deg, rgba(152, 24, 35, 0.94), rgba(226, 55, 68, 0.75), rgba(23, 23, 23, 0.22)),
+        url("https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1400&q=85") center / cover;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-card h2 {
+      max-width: 720px;
+      margin: 0;
+      font-size: clamp(1.8rem, 4vw, 4rem);
+      line-height: 0.98;
+      letter-spacing: 0;
+    }
+
+    .hero-card p {
+      max-width: 620px;
+      margin: 14px 0 0;
+      color: rgba(255, 255, 255, 0.86);
+      line-height: 1.6;
+    }
+
+    .live-strip {
+      display: grid;
+      gap: 12px;
+      min-height: 260px;
+      overflow: hidden;
+      border-radius: var(--radius);
+      background: #171717;
+      padding: 14px;
+      color: #ffffff;
+      position: relative;
+    }
+
+    .live-strip::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(226, 55, 68, 0.22), rgba(0, 0, 0, 0));
+      pointer-events: none;
+    }
+
+    .live-track {
+      position: relative;
+      display: grid;
+      gap: 12px;
+      animation: compactReel 18s linear infinite;
+    }
+
+    .live-card {
+      min-height: 82px;
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      gap: 12px;
+      align-items: center;
+      padding: 10px;
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .live-card img {
+      width: 72px;
+      height: 62px;
+      border-radius: 6px;
+      object-fit: cover;
+    }
+
+    .live-card strong {
+      display: block;
+      font-size: 0.94rem;
+    }
+
+    .live-card span {
+      display: block;
+      margin-top: 5px;
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 0.82rem;
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(150px, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .stat-card,
+    .panel,
+    .report-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: 0 10px 24px rgba(17, 24, 39, 0.05);
+    }
+
+    .stat-card {
+      min-height: 124px;
+      display: grid;
+      align-content: space-between;
+      gap: 10px;
+      padding: 16px;
+    }
+
+    .stat-card span {
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 850;
+    }
+
+    .stat-card strong {
+      font-size: clamp(1.45rem, 2.4vw, 2.15rem);
+      letter-spacing: 0;
+    }
+
+    .stat-card small {
+      color: #8b8b92;
+      font-weight: 750;
+    }
+
+    .panel {
+      overflow: hidden;
+      margin-bottom: 18px;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .panel-header h2 {
+      margin: 0;
+      font-size: 1.06rem;
+      letter-spacing: 0;
+    }
+
+    .panel-header p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      min-width: 800px;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+      font-size: 0.92rem;
+    }
+
+    th {
+      color: #52525b;
+      background: #fafafa;
+      font-size: 0.76rem;
+      font-weight: 900;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .cell-title {
+      display: grid;
+      gap: 4px;
+    }
+
+    .cell-title strong {
+      color: var(--ink);
+      line-height: 1.3;
+    }
+
+    .cell-title span,
+    .muted {
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .row-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      border-radius: 6px;
+      padding: 4px 9px;
+      font-size: 0.76rem;
+      font-weight: 950;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .status.good {
+      color: var(--green);
+      background: var(--green-soft);
+    }
+
+    .status.waiting {
+      color: var(--amber);
+      background: var(--amber-soft);
+    }
+
+    .status.info {
+      color: var(--blue);
+      background: var(--blue-soft);
+    }
+
+    .status.bad {
+      color: var(--danger);
+      background: var(--danger-soft);
+    }
+
+    .mini-select {
+      min-height: 38px;
+      max-width: 210px;
+      border: 1px solid #e5e7eb;
+      border-radius: var(--radius);
+      background: #ffffff;
+      padding: 8px 10px;
+      color: #27272a;
+      outline: none;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: minmax(260px, 0.8fr) minmax(0, 1.2fr);
+      gap: 18px;
+    }
+
+    .form-body {
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .notification-list {
+      display: grid;
+      gap: 10px;
+      padding: 16px;
+    }
+
+    .note-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: start;
+      gap: 12px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+    }
+
+    .note-item p {
+      margin: 0;
+      line-height: 1.5;
+      font-weight: 750;
+    }
+
+    .note-item span {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .report-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .report-card {
+      padding: 16px;
+      min-height: 150px;
+    }
+
+    .report-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.83rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .report-card strong {
+      display: block;
+      margin-top: 10px;
+      font-size: clamp(1.5rem, 2.8vw, 2.4rem);
+      letter-spacing: 0;
+    }
+
+    .ranking {
+      display: grid;
+      gap: 10px;
+      padding: 16px;
+    }
+
+    .rank-row {
+      display: grid;
+      grid-template-columns: 34px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+
+    .rank-number {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 6px;
+      color: #ffffff;
+      background: var(--brand);
+      font-weight: 950;
+    }
+
+    .empty-state {
+      padding: 26px 16px;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 25;
+      max-width: min(420px, calc(100vw - 36px));
+      padding: 14px 16px;
+      border-radius: var(--radius);
+      color: #ffffff;
+      background: #171717;
+      box-shadow: var(--shadow);
+      transform: translateY(22px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 160ms ease, transform 160ms ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @keyframes foodReel {
+      0% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-48%);
+      }
+      100% {
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes compactReel {
+      0% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-38%);
+      }
+      100% {
+        transform: translateY(0);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    @media (max-width: 1180px) {
+      .stats-grid {
+        grid-template-columns: repeat(3, minmax(150px, 1fr));
+      }
+
+      .hero-band,
+      .grid-2,
+      .report-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .live-strip {
+        min-height: 230px;
+      }
+    }
+
+    @media (max-width: 920px) {
+      .login-screen {
+        grid-template-columns: 1fr;
+      }
+
+      .login-card {
+        min-height: auto;
+        padding-bottom: 34px;
+      }
+
+      .motion-panel {
+        min-height: 470px;
+      }
+
+      .motion-content {
+        grid-template-columns: 1fr;
+      }
+
+      .cinema-frame {
+        min-height: 260px;
+        height: 290px;
+        transform: none;
+      }
+
+      .food-shot {
+        min-height: 160px;
+      }
+
+      .app-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        min-height: auto;
+        z-index: 10;
+        padding: 14px;
+      }
+
+      .sidebar .brand-row {
+        margin-bottom: 12px;
+      }
+
+      .nav-list {
+        grid-auto-flow: column;
+        grid-auto-columns: max-content;
+        overflow-x: auto;
+        padding-bottom: 4px;
+      }
+
+      .nav-btn {
+        width: auto;
+        white-space: nowrap;
+      }
+
+      .sidebar-footer {
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        margin-top: 12px;
+        padding-top: 12px;
+      }
+
+      .main {
+        padding: 18px;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .header-actions {
+        width: 100%;
+        justify-content: stretch;
+      }
+
+      .search-box {
+        flex: 1 1 240px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .login-copy h1 {
+        font-size: clamp(2.1rem, 12vw, 3.6rem);
+      }
+
+      .motion-copy {
+        padding-bottom: 0;
+      }
+
+      .motion-copy h2 {
+        font-size: clamp(2rem, 10vw, 3rem);
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .stat-card {
+        min-height: 116px;
+      }
+
+      .hero-card {
+        min-height: 250px;
+      }
+
+      .live-card {
+        grid-template-columns: 58px 1fr;
+      }
+
+      .live-card img {
+        width: 58px;
+        height: 56px;
+      }
+
+      .panel-header,
+      .note-item,
+      .rank-row {
+        grid-template-columns: 1fr;
+      }
+
+      .panel-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .row-actions {
+        flex-direction: column;
+      }
+
+      .row-actions button,
+      .row-actions select {
+        width: 100%;
+        max-width: none;
+      }
+
+      .sidebar-footer {
+        grid-template-columns: 1fr;
+      }
+
+      .main {
+        padding: 14px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main id="loginScreen" class="login-screen">
+    <section class="login-card">
+      <div class="brand-row">
+        <div class="brand-mark">ZP</div>
+        <div class="brand-name">
+          <strong>Zaika Premium</strong>
+          <span>Admin command center</span>
+        </div>
+      </div>
+
+      <div class="login-copy">
+        <h1>Fresh orders. Clean control.</h1>
+        <p>Approve partners, watch COD revenue, manage active orders, and broadcast platform messages from one premium dashboard.</p>
+      </div>
+
+      <form id="loginForm" class="form-panel">
+        <div class="field">
+          <label for="adminEmail">Admin email</label>
+          <input id="adminEmail" type="email" autocomplete="email" placeholder="admin@zaikapremium.com" required />
+        </div>
+        <div class="field">
+          <label for="adminPassword">Password</label>
+          <input id="adminPassword" type="password" autocomplete="current-password" placeholder="Enter password" required />
+        </div>
+        <button class="primary-btn" type="submit">
+          <span>Open Dashboard</span>
+          <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14"></path>
+            <path d="m12 5 7 7-7 7"></path>
+          </svg>
+        </button>
+        <div id="loginMessage" class="login-message" role="status"></div>
+      </form>
+    </section>
+
+    <section class="motion-panel" aria-label="Food delivery animation">
+      <div class="motion-content">
+        <div class="motion-copy">
+          <h2>Orders move like a dinner rush.</h2>
+          <p>Realtime restaurant approvals, delivery assignment, COD totals, and customer visibility for the full Zaika Premium operation.</p>
+        </div>
+        <div class="cinema-frame" aria-hidden="true">
+          <div class="cinema-track">
+            <div class="food-shot" data-label="Hot biryani dispatch" style="background-image:url('https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?auto=format&fit=crop&w=700&q=80')"></div>
+            <div class="food-shot" data-label="Pizza ready for pickup" style="background-image:url('https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=700&q=80')"></div>
+            <div class="food-shot" data-label="North Indian dinner rush" style="background-image:url('https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=700&q=80')"></div>
+            <div class="food-shot" data-label="Premium desserts live" style="background-image:url('https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=700&q=80')"></div>
+            <div class="food-shot" data-label="Hot biryani dispatch" style="background-image:url('https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?auto=format&fit=crop&w=700&q=80')"></div>
+            <div class="food-shot" data-label="Pizza ready for pickup" style="background-image:url('https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=700&q=80')"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="appShell" class="app-shell hidden">
+    <aside class="sidebar">
+      <div class="brand-row">
+        <div class="brand-mark">ZP</div>
+        <div class="brand-name">
+          <strong>Zaika Premium</strong>
+          <span>Admin panel</span>
+        </div>
+      </div>
+
+      <nav class="nav-list" aria-label="Admin sections">
+        <button class="nav-btn active" type="button" data-section="overview">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h8V3H3v10Z"></path><path d="M13 21h8V11h-8v10Z"></path><path d="M13 3h8v6h-8V3Z"></path><path d="M3 21h8v-6H3v6Z"></path></svg>
+          Overview
+        </button>
+        <button class="nav-btn" type="button" data-section="restaurants">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h16"></path><path d="M5 10l1.4-6h11.2L19 10"></path><path d="M6 10v10"></path><path d="M18 10v10"></path><path d="M8 20h8"></path><path d="M9 14h6"></path></svg>
+          Restaurants
+        </button>
+        <button class="nav-btn" type="button" data-section="delivery">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17h10"></path><path d="M17 17h1.5a2.5 2.5 0 0 0 0-5H17V8h-4"></path><path d="M8 17a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z"></path><path d="M17 17a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z"></path><path d="M4 13h8V7H4v6Z"></path></svg>
+          Delivery Boys
+        </button>
+        <button class="nav-btn" type="button" data-section="orders">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12l1 20-7-3-7 3 1-20Z"></path><path d="M9 7h6"></path><path d="M9 11h6"></path></svg>
+          Orders
+        </button>
+        <button class="nav-btn" type="button" data-section="customers">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><path d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"></path><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          Customers
+        </button>
+        <button class="nav-btn" type="button" data-section="notifications">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+          Notifications
+        </button>
+        <button class="nav-btn" type="button" data-section="reports">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="m7 15 4-4 3 3 6-7"></path></svg>
+          Reports
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="admin-chip">
+          <span>Signed in</span>
+          <strong id="adminEmailLabel">Admin</strong>
+        </div>
+        <button id="logoutBtn" class="ghost-btn" type="button">Sign Out</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <h1 id="sectionTitle">Dashboard</h1>
+          <p id="sectionSubtitle">Realtime platform health for Zaika Premium.</p>
+        </div>
+        <div class="header-actions">
+          <label class="search-box" for="globalSearch">
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.35-4.35"></path><circle cx="11" cy="11" r="8"></circle></svg>
+            <input id="globalSearch" type="search" placeholder="Search orders, users, partners" />
+          </label>
+          <button id="refreshBtn" class="ghost-btn" type="button">
+            <svg aria-hidden="true" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M3 16v5h5"></path><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M16 8h5V3"></path></svg>
+            Refresh
+          </button>
+        </div>
+      </header>
+
+      <section id="overview" class="section active">
+        <div class="hero-band">
+          <article class="hero-card">
+            <h2>Tonight's operations, one glance.</h2>
+            <p>Control approvals, delivery reassignment, order cancellations, COD flow, customer visibility, and broadcasts without leaving the admin panel.</p>
+          </article>
+          <article class="live-strip" aria-label="Food order motion preview">
+            <div class="live-track">
+              <div class="live-card">
+                <img src="https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?auto=format&fit=crop&w=260&q=80" alt="" />
+                <div><strong>Tandoori platter</strong><span>Accepted by partner</span></div>
+              </div>
+              <div class="live-card">
+                <img src="https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=260&q=80" alt="" />
+                <div><strong>Chaat counter</strong><span>COD order placed</span></div>
+              </div>
+              <div class="live-card">
+                <img src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=260&q=80" alt="" />
+                <div><strong>Burger meal</strong><span>Ready for pickup</span></div>
+              </div>
+              <div class="live-card">
+                <img src="https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?auto=format&fit=crop&w=260&q=80" alt="" />
+                <div><strong>Grill kitchen</strong><span>Delivery assigned</span></div>
+              </div>
+              <div class="live-card">
+                <img src="https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?auto=format&fit=crop&w=260&q=80" alt="" />
+                <div><strong>Tandoori platter</strong><span>Accepted by partner</span></div>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card">
+            <span>Total Orders</span>
+            <strong id="statOrders">0</strong>
+            <small id="statActiveOrders">0 active now</small>
+          </article>
+          <article class="stat-card">
+            <span>Restaurants</span>
+            <strong id="statRestaurants">0</strong>
+            <small id="statPendingRestaurants">0 pending approval</small>
+          </article>
+          <article class="stat-card">
+            <span>Delivery Boys</span>
+            <strong id="statDelivery">0</strong>
+            <small id="statOnlineDelivery">0 online</small>
+          </article>
+          <article class="stat-card">
+            <span>Customers</span>
+            <strong id="statCustomers">0</strong>
+            <small>Registered users</small>
+          </article>
+          <article class="stat-card">
+            <span>COD Revenue</span>
+            <strong id="statRevenue">INR 0</strong>
+            <small>Delivered orders</small>
+          </article>
+        </div>
+
+        <div class="grid-2">
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>Pending Restaurants</h2>
+                <p>New partner requests waiting for approval.</p>
+              </div>
+            </div>
+            <div id="pendingRestaurantsList"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>Recent Orders</h2>
+                <p>Latest platform activity from the realtime database.</p>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Order</th>
+                    <th>Restaurant</th>
+                    <th>Customer</th>
+                    <th>Status</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody id="recentOrdersBody"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section id="restaurants" class="section">
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <h2>Restaurant Partners</h2>
+              <p>Approve or reject restaurant accounts stored in /restaurants/{uid}.</p>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Restaurant</th>
+                  <th>Cuisine</th>
+                  <th>Contact</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="restaurantsBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section id="delivery" class="section">
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <h2>Delivery Boys</h2>
+              <p>Approve or reject delivery accounts stored in /deliveryPartners/{uid}.</p>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Partner</th>
+                  <th>Phone</th>
+                  <th>Vehicle</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="deliveryBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section id="orders" class="section">
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <h2>Orders</h2>
+              <p>Cancel orders or reassign an approved delivery boy.</p>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Order</th>
+                  <th>Items</th>
+                  <th>Address</th>
+                  <th>Status</th>
+                  <th>Delivery Boy</th>
+                  <th>Total</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="ordersBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section id="customers" class="section">
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <h2>Customers</h2>
+              <p>Customer profiles stored in /customers/{uid}.</p>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th>Phone</th>
+                  <th>Address</th>
+                  <th>Orders</th>
+                  <th>Last Order</th>
+                </tr>
+              </thead>
+              <tbody id="customersBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section id="notifications" class="section">
+        <div class="grid-2">
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>Add Notification</h2>
+                <p>Messages are saved in /admin/notifications/{id}.</p>
+              </div>
+            </div>
+            <form id="notificationForm" class="form-body">
+              <div class="field">
+                <label for="notificationMessage">Message</label>
+                <textarea id="notificationMessage" placeholder="Example: Heavy rain in Sector 12, delivery may be delayed." required></textarea>
+              </div>
+              <button class="primary-btn" type="submit">Publish Notification</button>
+            </form>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>Notifications</h2>
+                <p>Latest messages created by admin.</p>
+              </div>
+            </div>
+            <div id="notificationsList" class="notification-list"></div>
+          </section>
+        </div>
+      </section>
+
+      <section id="reports" class="section">
+        <div class="report-grid">
+          <article class="report-card">
+            <span>Delivered COD</span>
+            <strong id="reportDeliveredCod">INR 0</strong>
+            <p class="muted">Collected from delivered orders.</p>
+          </article>
+          <article class="report-card">
+            <span>Open COD</span>
+            <strong id="reportOpenCod">INR 0</strong>
+            <p class="muted">Placed, accepted, preparing, pickup, and delivery orders.</p>
+          </article>
+          <article class="report-card">
+            <span>Cancelled Value</span>
+            <strong id="reportCancelledValue">INR 0</strong>
+            <p class="muted">COD amount removed from active flow.</p>
+          </article>
+        </div>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <h2>Top Restaurants</h2>
+              <p>Ranked by delivered COD order value.</p>
+            </div>
+          </div>
+          <div id="topRestaurantsList" class="ranking"></div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signInWithEmailAndPassword,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+    import {
+      getDatabase,
+      onValue,
+      push,
+      ref,
+      remove,
+      serverTimestamp,
+      set,
+      update
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
+
+    const firebaseConfig = {
+  apiKey: "AIzaSyCLakeHqoTmay7ps0vq7mHhDWfijJR17SA",
+  authDomain: "new-zaika-4210.firebaseapp.com",
+  databaseURL: "https://new-zaika-4210-default-rtdb.firebaseio.com",
+  projectId: "new-zaika-4210",
+  storageBucket: "new-zaika-4210.firebasestorage.app",
+  messagingSenderId: "1044800298395",
+  appId: "1:1044800298395:web:1aa9d0c3c9eb058592553e",
+  measurementId: "G-D9W9JW1TW8"
+};
+    const orderStatuses = [
+      "PLACED",
+      "ACCEPTED",
+      "PREPARING",
+      "READY_FOR_PICKUP",
+      "PICKED_UP",
+      "OUT_FOR_DELIVERY",
+      "DELIVERED",
+      "CANCELLED"
+    ];
+
+    const sectionMeta = {
+      overview: ["Dashboard", "Realtime platform health for Zaika Premium."],
+      restaurants: ["Restaurants", "Approve, reject, and inspect restaurant partners."],
+      delivery: ["Delivery Boys", "Approve delivery partners and monitor their availability."],
+      orders: ["Orders", "Cancel, reassign, and inspect COD orders."],
+      customers: ["Customers", "View customer profiles and order activity."],
+      notifications: ["Notifications", "Publish admin messages to the platform."],
+      reports: ["Reports", "Track COD value and top restaurant performance."]
+    };
+
+    const state = {
+      orders: {},
+      restaurants: {},
+      deliveryPartners: {},
+      customers: {},
+      notifications: {}
+    };
+
+    const $ = (selector) => document.querySelector(selector);
+    const formatMoney = new Intl.NumberFormat("en-IN", {
+      maximumFractionDigits: 0
+    });
+
+    let app;
+    let auth;
+    let db;
+    let subscriptions = [];
+    let activeSection = "overview";
+    let searchTerm = "";
+
+    const loginScreen = $("#loginScreen");
+    const appShell = $("#appShell");
+    const loginForm = $("#loginForm");
+    const loginMessage = $("#loginMessage");
+    const toast = $("#toast");
+
+    function hasFirebaseConfig() {
+      return Object.values(firebaseConfig).every((value) => {
+        const text = String(value || "");
+        return text && !text.includes("YOUR_");
+      });
+    }
+
+    function initFirebase() {
+      if (!hasFirebaseConfig()) {
+        loginMessage.textContent = "Add your Firebase project config inside admin.html before signing in.";
+        return false;
+      }
+
+      try {
+        app = initializeApp(firebaseConfig);
+        auth = getAuth(app);
+        db = getDatabase(app);
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+            openDashboard(user);
+          } else {
+            closeDashboard();
+          }
+        });
+        return true;
+      } catch (error) {
+        loginMessage.textContent = readableError(error);
+        return false;
+      }
+    }
+
+    function readableError(error) {
+      const code = error && error.code ? error.code.replace("auth/", "").replaceAll("-", " ") : "";
+      if (code) {
+        return code.charAt(0).toUpperCase() + code.slice(1);
+      }
+      return error && error.message ? error.message : "Something went wrong.";
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      window.clearTimeout(showToast.timer);
+      showToast.timer = window.setTimeout(() => toast.classList.remove("show"), 2600);
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function money(value) {
+      return `INR ${formatMoney.format(Number(value || 0))}`;
+    }
+
+    function formatDate(value) {
+      if (!value) return "Not available";
+      const date = typeof value === "number" ? new Date(value) : new Date(String(value));
+      if (Number.isNaN(date.getTime())) return "Not available";
+      return date.toLocaleString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+
+    function listFrom(object) {
+      return Object.entries(object || {}).map(([id, value]) => ({ id, ...(value || {}) }));
+    }
+
+    function getRestaurantName(id) {
+      return state.restaurants[id]?.name || state.restaurants[id]?.restaurantName || "Unknown restaurant";
+    }
+
+    function getCustomerName(uid) {
+      return state.customers[uid]?.name || "Customer";
+    }
+
+    function getDeliveryName(uid) {
+      if (!uid) return "Unassigned";
+      return state.deliveryPartners[uid]?.name || "Delivery partner";
+    }
+
+    function isApproved(entity) {
+      return entity && entity.approved === true;
+    }
+
+    function approvalLabel(entity) {
+      if (isApproved(entity)) return '<span class="status good">Approved</span>';
+      if (entity?.approvalStatus === "REJECTED" || entity?.rejected === true) {
+        return '<span class="status bad">Rejected</span>';
+      }
+      return '<span class="status waiting">Pending</span>';
+    }
+
+    function statusLabel(status) {
+      const value = String(status || "PLACED");
+      if (value === "DELIVERED") return `<span class="status good">${escapeHtml(value)}</span>`;
+      if (value === "CANCELLED") return `<span class="status bad">${escapeHtml(value)}</span>`;
+      if (value === "READY_FOR_PICKUP" || value === "OUT_FOR_DELIVERY" || value === "PICKED_UP") {
+        return `<span class="status info">${escapeHtml(value)}</span>`;
+      }
+      return `<span class="status waiting">${escapeHtml(value)}</span>`;
+    }
+
+    function orderItemsSummary(order) {
+      const rawItems = order.items || [];
+      const items = Array.isArray(rawItems) ? rawItems : Object.values(rawItems);
+      if (!items.length) return "No items listed";
+      return items.map((item) => {
+        const qty = item.quantity || item.qty || 1;
+        const name = item.name || item.itemName || "Item";
+        return `${qty} x ${name}`;
+      }).join(", ");
+    }
+
+    function orderMatches(order, id) {
+      if (!searchTerm) return true;
+      const haystack = [
+        id,
+        order.status,
+        order.address,
+        order.phone,
+        getRestaurantName(order.restaurantId),
+        getCustomerName(order.customerUid),
+        getDeliveryName(order.deliveryUid),
+        orderItemsSummary(order)
+      ].join(" ").toLowerCase();
+      return haystack.includes(searchTerm);
+    }
+
+    function entityMatches(entity, id) {
+      if (!searchTerm) return true;
+      return [id, ...Object.values(entity || {})].join(" ").toLowerCase().includes(searchTerm);
+    }
+
+    function sortedOrders() {
+      return listFrom(state.orders)
+        .sort((a, b) => Number(b.createdAt || 0) - Number(a.createdAt || 0));
+    }
+
+    function approvedDeliveryOptions(selectedUid = "") {
+      const approved = listFrom(state.deliveryPartners).filter(isApproved);
+      if (!approved.length) {
+        return '<option value="">No approved delivery boys</option>';
+      }
+      return [
+        '<option value="">Unassigned</option>',
+        ...approved.map((partner) => {
+          const selected = selectedUid === partner.id ? "selected" : "";
+          const online = partner.online ? " online" : "";
+          return `<option value="${escapeHtml(partner.id)}" ${selected}>${escapeHtml(partner.name || partner.email || partner.id)}${online}</option>`;
+        })
+      ].join("");
+    }
+
+    function renderAll() {
+      renderStats();
+      renderOverview();
+      renderRestaurants();
+      renderDelivery();
+      renderOrders();
+      renderCustomers();
+      renderNotifications();
+      renderReports();
+    }
+
+    function renderStats() {
+      const orders = listFrom(state.orders);
+      const restaurants = listFrom(state.restaurants);
+      const delivery = listFrom(state.deliveryPartners);
+      const customers = listFrom(state.customers);
+      const activeOrders = orders.filter((order) => !["DELIVERED", "CANCELLED"].includes(order.status)).length;
+      const pendingRestaurants = restaurants.filter((item) => !isApproved(item) && item.approvalStatus !== "REJECTED" && item.rejected !== true).length;
+      const onlineDelivery = delivery.filter((item) => item.online === true).length;
+      const deliveredRevenue = orders
+        .filter((order) => order.status === "DELIVERED")
+        .reduce((sum, order) => sum + Number(order.totalAmount || 0), 0);
+
+      $("#statOrders").textContent = orders.length;
+      $("#statActiveOrders").textContent = `${activeOrders} active now`;
+      $("#statRestaurants").textContent = restaurants.length;
+      $("#statPendingRestaurants").textContent = `${pendingRestaurants} pending approval`;
+      $("#statDelivery").textContent = delivery.length;
+      $("#statOnlineDelivery").textContent = `${onlineDelivery} online`;
+      $("#statCustomers").textContent = customers.length;
+      $("#statRevenue").textContent = money(deliveredRevenue);
+    }
+
+    function renderOverview() {
+      const pendingRestaurants = listFrom(state.restaurants)
+        .filter((item) => !isApproved(item) && item.approvalStatus !== "REJECTED" && item.rejected !== true)
+        .filter((item) => entityMatches(item, item.id))
+        .slice(0, 5);
+
+      $("#pendingRestaurantsList").innerHTML = pendingRestaurants.length
+        ? `<div class="table-wrap"><table><thead><tr><th>Name</th><th>Cuisine</th><th>Action</th></tr></thead><tbody>${pendingRestaurants.map((item) => `
+            <tr>
+              <td><div class="cell-title"><strong>${escapeHtml(item.name || "Restaurant")}</strong><span>${escapeHtml(item.email || item.id)}</span></div></td>
+              <td>${escapeHtml(item.cuisine || "Not set")}</td>
+              <td><div class="row-actions">
+                <button class="secondary-btn" type="button" data-action="approve-restaurant" data-id="${escapeHtml(item.id)}">Approve</button>
+                <button class="danger-btn" type="button" data-action="reject-restaurant" data-id="${escapeHtml(item.id)}">Reject</button>
+              </div></td>
+            </tr>`).join("")}</tbody></table></div>`
+        : '<div class="empty-state">No pending restaurant approvals.</div>';
+
+      const recentOrders = sortedOrders().filter((order) => orderMatches(order, order.id)).slice(0, 6);
+      $("#recentOrdersBody").innerHTML = recentOrders.length ? recentOrders.map((order) => `
+        <tr>
+          <td><div class="cell-title"><strong>#${escapeHtml(order.id.slice(-7))}</strong><span>${formatDate(order.createdAt)}</span></div></td>
+          <td>${escapeHtml(getRestaurantName(order.restaurantId))}</td>
+          <td>${escapeHtml(getCustomerName(order.customerUid))}</td>
+          <td>${statusLabel(order.status)}</td>
+          <td>${money(order.totalAmount)}</td>
+        </tr>
+      `).join("") : '<tr><td colspan="5" class="empty-state">No orders found.</td></tr>';
+    }
+
+    function renderRestaurants() {
+      const restaurants = listFrom(state.restaurants).filter((item) => entityMatches(item, item.id));
+      $("#restaurantsBody").innerHTML = restaurants.length ? restaurants.map((item) => `
+        <tr>
+          <td><div class="cell-title"><strong>${escapeHtml(item.name || "Restaurant")}</strong><span>${escapeHtml(item.email || item.id)}</span><span>${escapeHtml(item.address || "Address not set")}</span></div></td>
+          <td>${escapeHtml(item.cuisine || "Not set")}</td>
+          <td>${escapeHtml(item.contact || item.phone || "Not set")}</td>
+          <td>${approvalLabel(item)}</td>
+          <td><div class="row-actions">
+            <button class="secondary-btn" type="button" data-action="approve-restaurant" data-id="${escapeHtml(item.id)}">Approve</button>
+            <button class="danger-btn" type="button" data-action="reject-restaurant" data-id="${escapeHtml(item.id)}">Reject</button>
+          </div></td>
+        </tr>
+      `).join("") : '<tr><td colspan="5" class="empty-state">No restaurants found.</td></tr>';
+    }
+
+    function renderDelivery() {
+      const delivery = listFrom(state.deliveryPartners).filter((item) => entityMatches(item, item.id));
+      $("#deliveryBody").innerHTML = delivery.length ? delivery.map((item) => `
+        <tr>
+          <td><div class="cell-title"><strong>${escapeHtml(item.name || "Delivery partner")}</strong><span>${escapeHtml(item.email || item.id)}</span></div></td>
+          <td>${escapeHtml(item.phone || "Not set")}</td>
+          <td>${escapeHtml(item.vehicle || "Not set")}</td>
+          <td>
+            ${approvalLabel(item)}
+            ${item.online ? '<span class="status info">Online</span>' : '<span class="status waiting">Offline</span>'}
+          </td>
+          <td><div class="row-actions">
+            <button class="secondary-btn" type="button" data-action="approve-delivery" data-id="${escapeHtml(item.id)}">Approve</button>
+            <button class="danger-btn" type="button" data-action="reject-delivery" data-id="${escapeHtml(item.id)}">Reject</button>
+          </div></td>
+        </tr>
+      `).join("") : '<tr><td colspan="5" class="empty-state">No delivery partners found.</td></tr>';
+    }
+
+    function renderOrders() {
+      const orders = sortedOrders().filter((order) => orderMatches(order, order.id));
+      $("#ordersBody").innerHTML = orders.length ? orders.map((order) => {
+        const canCancel = order.status !== "CANCELLED" && order.status !== "DELIVERED";
+        return `
+          <tr>
+            <td><div class="cell-title"><strong>#${escapeHtml(order.id.slice(-8))}</strong><span>${escapeHtml(getRestaurantName(order.restaurantId))}</span><span>${formatDate(order.createdAt)}</span></div></td>
+            <td>${escapeHtml(orderItemsSummary(order))}</td>
+            <td><div class="cell-title"><span>${escapeHtml(order.address || "Address not set")}</span><span>${escapeHtml(order.phone || "")}</span></div></td>
+            <td>
+              <select class="mini-select" data-action="status-order" data-id="${escapeHtml(order.id)}">
+                ${orderStatuses.map((status) => `<option value="${status}" ${status === order.status ? "selected" : ""}>${status}</option>`).join("")}
+              </select>
+            </td>
+            <td>
+              <select class="mini-select" data-action="reassign-order" data-id="${escapeHtml(order.id)}">
+                ${approvedDeliveryOptions(order.deliveryUid || "")}
+              </select>
+              <div class="muted">${escapeHtml(getDeliveryName(order.deliveryUid))}</div>
+            </td>
+            <td>${money(order.totalAmount)}</td>
+            <td><div class="row-actions">
+              <button class="danger-btn" type="button" data-action="cancel-order" data-id="${escapeHtml(order.id)}" ${canCancel ? "" : "disabled"}>Cancel</button>
+            </div></td>
+          </tr>
+        `;
+      }).join("") : '<tr><td colspan="7" class="empty-state">No orders found.</td></tr>';
+    }
+
+    function renderCustomers() {
+      const orders = listFrom(state.orders);
+      const customers = listFrom(state.customers).filter((item) => entityMatches(item, item.id));
+      $("#customersBody").innerHTML = customers.length ? customers.map((customer) => {
+        const customerOrders = orders.filter((order) => order.customerUid === customer.id);
+        const lastOrder = customerOrders.sort((a, b) => Number(b.createdAt || 0) - Number(a.createdAt || 0))[0];
+        return `
+          <tr>
+            <td><div class="cell-title"><strong>${escapeHtml(customer.name || "Customer")}</strong><span>${escapeHtml(customer.email || customer.id)}</span></div></td>
+            <td>${escapeHtml(customer.phone || "Not set")}</td>
+            <td>${escapeHtml(customer.address || "Not set")}</td>
+            <td>${customerOrders.length}</td>
+            <td>${lastOrder ? `${escapeHtml(lastOrder.status || "PLACED")} ${money(lastOrder.totalAmount)}` : "No orders"}</td>
+          </tr>
+        `;
+      }).join("") : '<tr><td colspan="5" class="empty-state">No customers found.</td></tr>';
+    }
+
+    function renderNotifications() {
+      const notifications = listFrom(state.notifications)
+        .filter((item) => entityMatches(item, item.id))
+        .sort((a, b) => Number(b.createdAt || 0) - Number(a.createdAt || 0));
+
+      $("#notificationsList").innerHTML = notifications.length ? notifications.map((item) => `
+        <article class="note-item">
+          <div>
+            <p>${escapeHtml(item.message || "")}</p>
+            <span>${formatDate(item.createdAt)}</span>
+          </div>
+          <button class="icon-btn" type="button" aria-label="Delete notification" title="Delete notification" data-action="delete-notification" data-id="${escapeHtml(item.id)}">
+            <svg aria-hidden="true" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="m19 6-1 16H6L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg>
+          </button>
+        </article>
+      `).join("") : '<div class="empty-state">No notifications found.</div>';
+    }
+
+    function renderReports() {
+      const orders = listFrom(state.orders);
+      const deliveredCod = orders
+        .filter((order) => order.status === "DELIVERED")
+        .reduce((sum, order) => sum + Number(order.totalAmount || 0), 0);
+      const openCod = orders
+        .filter((order) => !["DELIVERED", "CANCELLED"].includes(order.status))
+        .reduce((sum, order) => sum + Number(order.totalAmount || 0), 0);
+      const cancelledValue = orders
+        .filter((order) => order.status === "CANCELLED")
+        .reduce((sum, order) => sum + Number(order.totalAmount || 0), 0);
+
+      $("#reportDeliveredCod").textContent = money(deliveredCod);
+      $("#reportOpenCod").textContent = money(openCod);
+      $("#reportCancelledValue").textContent = money(cancelledValue);
+
+      const ranked = Object.entries(orders.reduce((acc, order) => {
+        if (order.status !== "DELIVERED") return acc;
+        const id = order.restaurantId || "unknown";
+        if (!acc[id]) acc[id] = { id, total: 0, count: 0 };
+        acc[id].total += Number(order.totalAmount || 0);
+        acc[id].count += 1;
+        return acc;
+      }, {})).map(([, value]) => value)
+        .sort((a, b) => b.total - a.total)
+        .slice(0, 8);
+
+      $("#topRestaurantsList").innerHTML = ranked.length ? ranked.map((item, index) => `
+        <div class="rank-row">
+          <div class="rank-number">${index + 1}</div>
+          <div class="cell-title"><strong>${escapeHtml(getRestaurantName(item.id))}</strong><span>${item.count} delivered orders</span></div>
+          <strong>${money(item.total)}</strong>
+        </div>
+      `).join("") : '<div class="empty-state">No delivered orders yet.</div>';
+    }
+
+    function openDashboard(user) {
+      loginScreen.classList.add("hidden");
+      appShell.classList.remove("hidden");
+      $("#adminEmailLabel").textContent = user.email || "Admin";
+      attachRealtimeListeners();
+      renderAll();
+    }
+
+    function closeDashboard() {
+      appShell.classList.add("hidden");
+      loginScreen.classList.remove("hidden");
+      detachRealtimeListeners();
+      Object.keys(state).forEach((key) => {
+        state[key] = {};
+      });
+      renderAll();
+    }
+
+    function attachRealtimeListeners() {
+      detachRealtimeListeners();
+      subscriptions = [
+        onValue(ref(db, "orders"), (snapshot) => {
+          state.orders = snapshot.val() || {};
+          renderAll();
+        }),
+        onValue(ref(db, "restaurants"), (snapshot) => {
+          state.restaurants = snapshot.val() || {};
+          renderAll();
+        }),
+        onValue(ref(db, "deliveryPartners"), (snapshot) => {
+          state.deliveryPartners = snapshot.val() || {};
+          renderAll();
+        }),
+        onValue(ref(db, "customers"), (snapshot) => {
+          state.customers = snapshot.val() || {};
+          renderAll();
+        }),
+        onValue(ref(db, "admin/notifications"), (snapshot) => {
+          state.notifications = snapshot.val() || {};
+          renderAll();
+        })
+      ];
+    }
+
+    function detachRealtimeListeners() {
+      subscriptions.forEach((unsubscribe) => unsubscribe());
+      subscriptions = [];
+    }
+
+    async function setRestaurantApproval(id, approved) {
+      await update(ref(db, `restaurants/${id}`), {
+        approved,
+        rejected: !approved,
+        approvalStatus: approved ? "APPROVED" : "REJECTED",
+        updatedAt: serverTimestamp()
+      });
+      showToast(approved ? "Restaurant approved." : "Restaurant rejected.");
+    }
+
+    async function setDeliveryApproval(id, approved) {
+      await update(ref(db, `deliveryPartners/${id}`), {
+        approved,
+        rejected: !approved,
+        approvalStatus: approved ? "APPROVED" : "REJECTED",
+        updatedAt: serverTimestamp()
+      });
+      showToast(approved ? "Delivery boy approved." : "Delivery boy rejected.");
+    }
+
+    async function cancelOrder(id) {
+      await update(ref(db, `orders/${id}`), {
+        status: "CANCELLED",
+        updatedAt: serverTimestamp()
+      });
+      showToast("Order cancelled.");
+    }
+
+    async function updateOrderStatus(id, status) {
+      await update(ref(db, `orders/${id}`), {
+        status,
+        updatedAt: serverTimestamp()
+      });
+      showToast("Order status updated.");
+    }
+
+    async function reassignOrder(id, deliveryUid) {
+      await update(ref(db, `orders/${id}`), {
+        deliveryUid: deliveryUid || "",
+        updatedAt: serverTimestamp()
+      });
+      showToast(deliveryUid ? "Delivery boy assigned." : "Delivery assignment cleared.");
+    }
+
+    async function addNotification(message) {
+      const notificationRef = push(ref(db, "admin/notifications"));
+      await set(notificationRef, {
+        message,
+        createdAt: serverTimestamp()
+      });
+      showToast("Notification published.");
+    }
+
+    async function deleteNotification(id) {
+      await remove(ref(db, `admin/notifications/${id}`));
+      showToast("Notification deleted.");
+    }
+
+    function activateSection(section) {
+      activeSection = section;
+      document.querySelectorAll(".section").forEach((element) => {
+        element.classList.toggle("active", element.id === section);
+      });
+      document.querySelectorAll(".nav-btn").forEach((button) => {
+        button.classList.toggle("active", button.dataset.section === section);
+      });
+      const [title, subtitle] = sectionMeta[section] || sectionMeta.overview;
+      $("#sectionTitle").textContent = title;
+      $("#sectionSubtitle").textContent = subtitle;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    loginForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      loginMessage.textContent = "";
+      if (!auth) {
+        loginMessage.textContent = "Firebase is not configured yet.";
+        return;
+      }
+
+      const email = $("#adminEmail").value.trim();
+      const password = $("#adminPassword").value;
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+      } catch (error) {
+        loginMessage.textContent = readableError(error);
+      }
+    });
+
+    $("#logoutBtn").addEventListener("click", async () => {
+      if (auth) await signOut(auth);
+    });
+
+    $("#refreshBtn").addEventListener("click", () => {
+      renderAll();
+      showToast("Dashboard refreshed.");
+    });
+
+    $("#globalSearch").addEventListener("input", (event) => {
+      searchTerm = event.target.value.trim().toLowerCase();
+      renderAll();
+    });
+
+    document.querySelectorAll(".nav-btn").forEach((button) => {
+      button.addEventListener("click", () => activateSection(button.dataset.section || "overview"));
+    });
+
+    document.addEventListener("click", async (event) => {
+      const target = event.target.closest("[data-action]");
+      if (!target || !db) return;
+      const action = target.dataset.action;
+      const id = target.dataset.id;
+      try {
+        if (action === "approve-restaurant") await setRestaurantApproval(id, true);
+        if (action === "reject-restaurant") await setRestaurantApproval(id, false);
+        if (action === "approve-delivery") await setDeliveryApproval(id, true);
+        if (action === "reject-delivery") await setDeliveryApproval(id, false);
+        if (action === "cancel-order") await cancelOrder(id);
+        if (action === "delete-notification") await deleteNotification(id);
+      } catch (error) {
+        showToast(error.message || "Action failed.");
+      }
+    });
+
+    document.addEventListener("change", async (event) => {
+      const target = event.target;
+      if (!target.matches("[data-action]") || !db) return;
+      const action = target.dataset.action;
+      const id = target.dataset.id;
+      try {
+        if (action === "status-order") await updateOrderStatus(id, target.value);
+        if (action === "reassign-order") await reassignOrder(id, target.value);
+      } catch (error) {
+        showToast(error.message || "Update failed.");
+      }
+    });
+
+    $("#notificationForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const input = $("#notificationMessage");
+      const message = input.value.trim();
+      if (!message || !db) return;
+      try {
+        await addNotification(message);
+        input.value = "";
+      } catch (error) {
+        showToast(error.message || "Notification failed.");
+      }
+    });
+
+    initFirebase();
+    activateSection(activeSection);
+  </script>
+</body>
+</html>
